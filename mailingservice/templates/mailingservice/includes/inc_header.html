@@ -1,0 +1,10 @@
+<div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 mb-3 bg-white border-bottom box-shadow">
+    <h5 class="my-0 mr-md-auto font-weight-normal">DOVES: Сервис рассылок</h5>
+    <nav class="ms-5">
+        <a class="p-2 btn btn-outline-primary" href="{% url 'mailingservice:home' %}">HOME</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'mailingservice:client_list' %}">Клиенты</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'mailingservice:message_list' %}">Сообщения для рассылки</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'mailingservice:mailing_list' %}">Настройки рассылки</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'mailingservice:home' %}">Попытка рассылки</a>
+    </nav>
+</div>
