@@ -1,0 +1,19 @@
+{% extends 'mailingservice/client_base.html' %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Подробнее о сообщении  "{{object.message_name }}"</h1>
+</div>
+<div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="col">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p class="card-text">Тема письма: {{ object.message_name }}</p>
+                    <p class="card-text">Тело письма: {{ object.message_body }}</p>
+                </div>
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'mailingservice:message_list' %}" role="button">Back</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
