@@ -1,0 +1,25 @@
+{% extends 'mailingservice/client_base.html' %}
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Подробнее о рассылке  "{{object.mailing_name }}"</h1>
+</div>
+<div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="col">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p class="card-text">Тема рассылки: {{ object.mailing_name }}</p>
+                    <p class="card-text">Сообщение: {{ object.message }}</p>
+                    <p class="card-text">Клиенты: {{ object.clients }}</p>
+                    <p class="card-text">Дата начала рассылки: {{ object.started_at }}</p>
+                    <p class="card-text">Дата окончания рассылки: {{ object.finished_at }}</p>
+                    <p class="card-text">Периодичность: {{ object.periodic }}</p>
+                    <p class="card-text">Статус рассылки: {{ object.status }}</p>
+                </div>
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'mailingservice:mailing_list' %}" role="button">Back</a>
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'mailingservice:mailing_stats' object.pk %}" role="button">Статистика по рассылке</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
