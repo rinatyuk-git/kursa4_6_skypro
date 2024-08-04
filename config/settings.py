@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'django_crontab',
 
     'mailingservice',
 ]
@@ -127,3 +129,20 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'polotimi@yandex.ru'
+EMAIL_HOST_PASSWORD = '2025_LETO_perm'
+# EMAIL_HOST_PASSWORD = 'ghlzmibolbmhysij'
+EMAIL_USE_SSL = True
+
+CRONJOBS = [
+    ('0 18 * * *', 'mailingservice.cron.once_day_mailing'),
+    ('0 18 * * 2', 'mailingservice.cron.once_week_mailing'),
+    ('0 18 10 * *', 'mailingservice.cron.once_month_mailing'),
+]
+
+EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
+EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
+
