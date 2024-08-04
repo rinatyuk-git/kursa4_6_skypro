@@ -3,10 +3,17 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from mailingservice.models import Client, Message, Mailing, Attempt
+from mailingservice.services import send_mailing
 
 
 def home(request):
     return render(request, "mailingservice/home.html")
+
+
+def mailing_stats(request, pk):
+    attempts = Attempt.objects.filter(mailing_id=pk)
+    context = {'attempts': attempts}
+    return render(request, 'mailingservice/mailing_stats.html', context)
 
 
 class ClientListView(ListView):
@@ -72,6 +79,11 @@ class MailingCreateView(CreateView):
     fields = '__all__'
     success_url = reverse_lazy('mailingservice:mailing_list')
 
+    def form_valid(self, form):
+        obj = form.save()
+        send_mailing(obj)
+        return super().form_valid(form)
+
 
 class MailingUpdateView(UpdateView):
     model = Mailing
@@ -82,9 +94,3 @@ class MailingUpdateView(UpdateView):
 class MailingDeleteView(DeleteView):
     model = Mailing
     success_url = reverse_lazy('mailingservice:mailing_list')
-
-
-def mailing_stats(request, pk):
-    attempts = Attempt.objects.filter(mailing_id=pk)
-    context = {'attempts': attempts}
-    return render(request, 'mailing_stats.html', context)

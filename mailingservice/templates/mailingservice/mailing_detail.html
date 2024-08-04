@@ -17,6 +17,7 @@
                     <p class="card-text">Статус рассылки: {{ object.status }}</p>
                 </div>
                 <a class="btn btn-sm btn-outline-secondary" href="{% url 'mailingservice:mailing_list' %}" role="button">Back</a>
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'mailingservice:mailing_list' %}" role="button">Запустить рассылку</a>
                 <a class="btn btn-sm btn-outline-secondary" href="{% url 'mailingservice:mailing_stats' object.pk %}" role="button">Статистика по рассылке</a>
             </div>
         </div>
