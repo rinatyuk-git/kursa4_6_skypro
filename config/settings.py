@@ -142,11 +142,14 @@ EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", False) == "True"
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
+DATE_FORMATS = ['%d-%m-%Y']
+TIME_FORMATS = ['%H:%M']
+
 CRONJOBS = [
-    ('*/2 * * * *', 'mailingservice.services.send_mailing'),  # периодичность: раз в 2 минуты
-    ('0 18 * * *', 'mailingservice.services.send_mailing'),  # периодичность: раз в день
-    ('0 18 * * 2', 'mailingservice.services.send_mailing'),  # периодичность: раз в неделю
-    ('0 18 10 * *', 'mailingservice.services.send_mailing'),  # периодичность: раз в месяц
+    ('* * * * *', 'mailingservice.cron.check_send_mailing'),  # периодичность: раз в 2 минуты
+    ('* * * * *', 'mailingservice.cron.check_mailing_status'),  # периодичность: раз в день
+    # ('0 18 * * 2', 'mailingservice.cron.send_mailing'),  # периодичность: раз в неделю
+    # ('0 18 10 * *', 'mailingservice.cron.send_mailing'),  # периодичность: раз в месяц
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'

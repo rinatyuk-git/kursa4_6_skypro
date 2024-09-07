@@ -15,7 +15,7 @@ from users.models import User
 
 class UserListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = User
-    permission_required = 'users.can_view_user_list'
+    permission_required = 'mailingservice.can_view_user_list'
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -54,14 +54,14 @@ def email_verification(request, token):
     return redirect(reverse("users:user_login"))
 
 
-class UserUpdateView(LoginRequiredMixin, UpdateView):
+class UserUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = User
     fields = ('id', 'user_email', 'is_active')
     success_url = reverse_lazy('users:user_list')
 
     def get_form_class(self):
         user = self.request.user
-        if user.has_perm("can_view_user_list") and user.has_perm("can_block_user"):
+        if user.has_perm("mailingservice.can_view_user_list") and user.has_perm("mailingservice.can_block_user"):
             return MailingModeratorForm
         raise PermissionDenied
 

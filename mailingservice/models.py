@@ -6,8 +6,14 @@ NULLABLE = {"blank": True, "null": True}
 
 
 class Client(models.Model):  # Клиент сервиса
-    client_name = models.CharField(max_length=150, verbose_name="Ф. И. О. Клиента", )  # Ф. И. О. Клиента
-    client_email = models.EmailField(verbose_name="Контактный email Клиента", unique=True, )  # контактный email Клиента
+    client_name = models.CharField(
+        max_length=150,
+        verbose_name="Ф. И. О. Клиента",
+    )  # Ф. И. О. Клиента
+    client_email = models.EmailField(
+        verbose_name="Контактный email Клиента",
+        unique=True,
+    )  # контактный email Клиента
     client_info = models.TextField(
         max_length=2550,
         verbose_name="Информация о Клиенте",
@@ -95,6 +101,7 @@ class Mailing(models.Model):
         related_name="mailings",
     )
 
+    time = models.TimeField(verbose_name='Время запуска', help_text="В формате 12:00:00")
     started_at = models.DateField(verbose_name='Дата начала рассылки', help_text="В формате 2024-08-04")
     finished_at = models.DateField(verbose_name='Дата окончания рассылки', help_text="В формате 2024-08-04",
                                    **NULLABLE,)
