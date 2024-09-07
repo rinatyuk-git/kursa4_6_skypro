@@ -2,9 +2,24 @@
     <h5 class="my-0 mr-md-auto font-weight-normal">DOVES: Сервис рассылок</h5>
     <nav class="ms-5">
         <a class="p-2 btn btn-outline-primary" href="{% url 'mailingservice:home' %}">HOME</a>
+        {% if user.is_authenticated %}
         <a class="p-2 btn btn-outline-primary" href="{% url 'mailingservice:client_list' %}">Клиенты</a>
         <a class="p-2 btn btn-outline-primary" href="{% url 'mailingservice:message_list' %}">Сообщения для рассылки</a>
         <a class="p-2 btn btn-outline-primary" href="{% url 'mailingservice:mailing_list' %}">Настройки рассылки</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'blog:blog_list' %}">Информация о блогах</a>
+        {% endif %}
         <a class="p-2 btn btn-outline-primary" href="{% url 'mailingservice:home' %}">Попытка рассылки</a>
+<!--        {% if user.is_authenticated or user.is_superuser %}-->
+        <a class="p-2 btn btn-outline-primary" href="{% url 'users:user_list' %}">Пользователи</a>
+<!--        {% endif %}-->
+        {% if user.is_authenticated %}
+            <form method="post" action="{% url 'users:user_logout' %}">
+                {% csrf_token %}
+                <button class="p-2 btn btn-outline-primary" type="submit">Выйти</button>
+            </form>
+        {% else %}
+        <a class="p-2 btn btn-outline-primary" href="{% url 'users:user_login' %}">Войти</a>
+        <a class="p-2 btn btn-outline-primary" href="{% url 'users:user_register' %}">Регистрация</a>
+        {% endif %}
     </nav>
 </div>

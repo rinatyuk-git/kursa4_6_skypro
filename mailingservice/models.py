@@ -1,13 +1,25 @@
 from django.db import models
 
+from users.models import User
+
 NULLABLE = {"blank": True, "null": True}
 
 
 class Client(models.Model):  # Клиент сервиса
     client_name = models.CharField(max_length=150, verbose_name="Ф. И. О. Клиента", )  # Ф. И. О. Клиента
     client_email = models.EmailField(verbose_name="Контактный email Клиента", unique=True, )  # контактный email Клиента
-    client_info = models.TextField(max_length=2550, verbose_name="Информация о Клиенте",
-                                   **NULLABLE, )  # комментарий по Клиенту
+    client_info = models.TextField(
+        max_length=2550,
+        verbose_name="Информация о Клиенте",
+        **NULLABLE,
+    )  # комментарий по Клиенту
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        verbose_name="Создатель",
+        help_text="Укажите Создателя клиента",
+        **NULLABLE,
+    )  # поле владельца к клиентам + ссылка на модель пользователя
 
     class Meta:
         verbose_name = "Клиент"
@@ -19,8 +31,22 @@ class Client(models.Model):  # Клиент сервиса
 
 
 class Message(models.Model):  # Сообщение для рассылки
-    message_name = models.CharField(max_length=150, verbose_name="Тема письма", )  # Тема письма
-    message_body = models.TextField(max_length=2550, verbose_name="Тело письма", **NULLABLE, )  # Тело письма
+    message_name = models.CharField(
+        max_length=150,
+        verbose_name="Тема письма",
+    )  # Тема письма
+    message_body = models.TextField(
+        max_length=2550,
+        verbose_name="Тело письма",
+        **NULLABLE,
+    )  # Тело письма
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        verbose_name="Создатель",
+        help_text="Укажите Создателя сообщения",
+        **NULLABLE,
+    )  # поле владельца к сообщениям + ссылка на модель пользователя
 
     class Meta:
         verbose_name = "Сообщение"
@@ -86,11 +112,25 @@ class Mailing(models.Model):
         choices=STATUS_CHOICES,
         default=CREATED,
     )
+    owner = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        verbose_name="Создатель",
+        help_text="Укажите Создателя рассылки",
+        **NULLABLE,
+    )  # поле владельца к рассылке + ссылка на модель пользователя
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = "Рассылка"
         verbose_name_plural = "Рассылки"
         ordering = ('pk',)
+        permissions = [
+            ("can_view_mailing_list", "Can view mailings list"),  # Может просматривать любые рассылки. /mailing_list
+            ("can_view_user_list", "Can view users list"),  # Может просматривать список пользователей сервиса.
+            ("can_block_user", "Can block user"),  # Может блокировать пользователей сервиса.
+            ("can_turnoff_mailing", "Can turnoff mailing"),  # Может отключать рассылки.
+        ]
 
     def __str__(self):
         return f'{self.mailing_name}'
@@ -108,20 +148,6 @@ class Attempt(models.Model):
         verbose_name='Рассылки',
         # related_name="attempts",
     )
-
-    # mailing_name = models.ForeignKey(
-    #     Mailing,
-    #     on_delete=models.CASCADE,
-    #     verbose_name='Рассылки',
-    #     # related_name="attempts",
-    # )
-
-    # mailing_status = models.ForeignKey(
-    #     Mailing,
-    #     on_delete=models.CASCADE,
-    #     verbose_name='Рассылки',
-    #     # related_name="attempts",
-    # )
 
     lastattempt_at = models.DateTimeField(
         auto_now_add=True,

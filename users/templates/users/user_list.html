@@ -1,0 +1,28 @@
+{% extends 'mailingservice/client_base.html' %}
+
+{% block content %}
+<div class="col-8">
+    <a class="btn btn-primary" href="{% url 'users:user_register' %}" role="button">Создать нового Пользователя</a>
+</div>
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Информация о Пользователях</h1>
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        {% for object in object_list %}
+        <div class="col">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <p class="card-text">{{ object.email }}</p>
+                </div>
+                <div class="btn-group">
+                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'users:user_detail' object.pk %}" role="button">Просмотр Пользователя</a>
+                    {% if user.is_superuser %}
+                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'users:user_edit' object.pk %}" role="button" >Редактировать Пользователя</a>
+                    <a class="btn btn-sm btn-outline-secondary" href="{% url 'users:user_delete' object.pk %}" role="button">Удалить Пользователя</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

@@ -16,6 +16,26 @@
 </div>
 
 <div class="container">
+    <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+        <div class="col">
+            <table class="table table-striped">
+                <tr>
+                    <th>количество рассылок всего</th>
+                    <th>количество активных рассылок</th>
+                    <th>количество уникальных клиентов для рассылок</th>
+                    <th>три случайные статьи из блога</th>
+                </tr>
+                <tr>
+                    <td>{{ mailings_count }}</td>
+                    <td>{{ active_mailings_count }}</td>
+                    <td>{{ client_count }}</td>
+                    <td>{{ attempt.status }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="container">
 
     <footer class="pt-4 my-md-5 pt-md-5 border-top">
         {% include 'mailingservice/includes/inc_footer.html' %}

@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv(override=True)
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,10 +22,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-g@%$2e@=k26nzm^l0=cc&7+_3!5j395r@4-$*x2yi&p@$37(%r'
+SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", False) == "True"
 
 ALLOWED_HOSTS = ["*"]
 
@@ -39,6 +42,8 @@ INSTALLED_APPS = [
     'django_crontab',
 
     'mailingservice',
+    'users',
+    'blog',
 ]
 
 MIDDLEWARE = [
@@ -77,12 +82,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'mailsender',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
+        "NAME": os.getenv("NAME"),
+        "USER": os.getenv("DB_USER"),
+        'PASSWORD': os.getenv('PASSWORD'),
     }
 }
 
@@ -130,19 +132,27 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-EMAIL_HOST = 'smtp.yandex.ru'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = 'polotimi@yandex.ru'
-EMAIL_HOST_PASSWORD = '2025_LETO_perm'
-# EMAIL_HOST_PASSWORD = 'ghlzmibolbmhysij'
-EMAIL_USE_SSL = True
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS", False) == "True"
+EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", False) == "True"
+
+SERVER_EMAIL = EMAIL_HOST_USER
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 CRONJOBS = [
-    ('0 18 * * *', 'mailingservice.cron.once_day_mailing'),
-    ('0 18 * * 2', 'mailingservice.cron.once_week_mailing'),
-    ('0 18 10 * *', 'mailingservice.cron.once_month_mailing'),
+    ('*/2 * * * *', 'mailingservice.services.send_mailing'),  # периодичность: раз в 2 минуты
+    ('0 18 * * *', 'mailingservice.services.send_mailing'),  # периодичность: раз в день
+    ('0 18 * * 2', 'mailingservice.services.send_mailing'),  # периодичность: раз в неделю
+    ('0 18 10 * *', 'mailingservice.services.send_mailing'),  # периодичность: раз в месяц
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = os.path.join(BASE_DIR, 'sent_emails')
 
+AUTH_USER_MODEL = "users.User"
+
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'

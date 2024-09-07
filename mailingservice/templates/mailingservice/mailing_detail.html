@@ -10,14 +10,14 @@
                 <div class="card-body">
                     <p class="card-text">Тема рассылки: {{ object.mailing_name }}</p>
                     <p class="card-text">Сообщение: {{ object.message }}</p>
-                    <p class="card-text">Клиенты: {{ object.clients }}</p>
+<!--                    <p class="card-text">Клиенты: {{ object.clients }}</p>-->
                     <p class="card-text">Дата начала рассылки: {{ object.started_at }}</p>
                     <p class="card-text">Дата окончания рассылки: {{ object.finished_at }}</p>
                     <p class="card-text">Периодичность: {{ object.periodic }}</p>
                     <p class="card-text">Статус рассылки: {{ object.status }}</p>
                 </div>
                 <a class="btn btn-sm btn-outline-secondary" href="{% url 'mailingservice:mailing_list' %}" role="button">Back</a>
-                <a class="btn btn-sm btn-outline-secondary" href="{% url 'mailingservice:mailing_list' %}" role="button">Запустить рассылку</a>
+                <a class="btn btn-sm btn-outline-secondary" href="{% url 'mailingservice:mailing_run' object.pk %}" role="button">Запустить рассылку</a>
                 <a class="btn btn-sm btn-outline-secondary" href="{% url 'mailingservice:mailing_stats' object.pk %}" role="button">Статистика по рассылке</a>
             </div>
         </div>
