@@ -139,6 +139,9 @@ class Mailing(models.Model):
             ("can_turnoff_mailing", "Can turnoff mailing"),  # Может отключать рассылки.
         ]
 
+
+
+
     def __str__(self):
         return f'{self.mailing_name}'
 
@@ -173,4 +176,11 @@ class Attempt(models.Model):
         verbose_name="Ответ почтового сервера",
         **NULLABLE,
     )
+
+    class Meta:
+        verbose_name = 'Попытка'
+        verbose_name_plural = 'Попытки'
+
+    def __str__(self):
+        return f'{self.lastattempt_at} {self.status} {self.server_answer}'
 

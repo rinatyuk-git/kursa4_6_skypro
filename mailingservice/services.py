@@ -1,8 +1,10 @@
 import smtplib
 from datetime import datetime
+from random import shuffle
 
 from django.core.mail import send_mail
 
+from blog.models import Blog
 from config import settings
 from mailingservice.models import Mailing, Attempt
 
@@ -31,3 +33,9 @@ def send_mailing(mailing_item: Mailing):
             status='NOT SUCCESS',
             server_answer=f'{e}')
         obj.save()
+
+
+def get_three_blogs():  # вызвать три случайные статьи из блога
+    three_blog_list = list(Blog.objects.all())
+    shuffle(three_blog_list)
+    return three_blog_list[:3]

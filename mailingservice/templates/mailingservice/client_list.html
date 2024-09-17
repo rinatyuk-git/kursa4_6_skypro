@@ -1,7 +1,7 @@
 {% extends 'mailingservice/client_base.html' %}
 
 {% block content %}
-{% if user.is_authenticated %}
+{% if user.is_authenticated and not perms.mailingservice.can_view_mailing_list %}
 <div class="col-8">
     <a class="btn btn-primary" href="{% url 'mailingservice:client_create' %}" role="button">Создать нового клиента</a>
 </div>

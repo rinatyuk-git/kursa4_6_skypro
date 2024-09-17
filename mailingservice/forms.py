@@ -25,4 +25,4 @@ class MailingForm(StyleFormMixin, ModelForm):
 class MailingModeratorForm(StyleFormMixin, ModelForm):
     class Meta:
         model = Mailing
-        fields = ("is_active", "owner",)
+        fields = ("is_active",)

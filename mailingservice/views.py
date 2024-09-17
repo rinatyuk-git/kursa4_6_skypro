@@ -1,18 +1,20 @@
 from django.contrib import messages
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
+from mailingservice.forms import ClientForm, MailingForm, MailingModeratorForm
 from mailingservice.models import Client, Message, Mailing, Attempt
-from mailingservice.services import send_mailing
+from mailingservice.services import send_mailing, get_three_blogs
 
 
 def home(request):
     context = {'mailings_count': Mailing.objects.all().count(),  # количество рассылок всего,
                'active_mailings_count': Mailing.objects.filter(is_active=True).count(),  # количество активных рассылок,
                'client_count': Client.objects.all().count(),  # количество уникальных клиентов для рассылок,
-
+               'three_blogs': get_three_blogs(),  # три случайные статьи из блога
                }
     return render(request, "mailingservice/home.html", context=context)
 
@@ -112,13 +114,16 @@ class MessageDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('mailingservice:message_list')
 
 
-class MailingListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class MailingListView(
+    LoginRequiredMixin,
+    ListView):
     model = Mailing
-    permission_required = 'mailingservice.can_view_mailing_list'
+    template_name = 'mailing_list.html'
+    # permission_required = 'mailingservice.can_view_mailing_list'
 
     def get_queryset(self):
         user = self.request.user
-        if user.is_superuser and user.has_perm("mailingservice.can_view_mailing_list"):
+        if user.is_superuser or user.has_perm("mailingservice.can_view_mailing_list"):
             return Mailing.objects.all()
         else:
             return Mailing.objects.filter(owner=user)
@@ -134,13 +139,22 @@ class MailingCreateView(LoginRequiredMixin, CreateView):
     success_url = reverse_lazy('mailingservice:mailing_list')
 
 
-class MailingUpdateView(LoginRequiredMixin, UpdateView):
+class MailingUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
     model = Mailing
     fields = '__all__'
     success_url = reverse_lazy('mailingservice:mailing_list')
+    permission_required = 'mailingservice.can_turnoff_mailing'
 
     def get_success_url(self):
         return reverse("mailingservice:mailing_detail", args=[self.kwargs.get("pk")])
+
+    def get_form_class(self):
+        user = self.request.user
+        if user == self.object.owner:
+            return MailingForm
+        if user.has_perm('mailingservice.can_turnoff_mailing'):
+            return MailingModeratorForm
+        raise PermissionDenied
 
 
 class MailingDeleteView(LoginRequiredMixin, DeleteView):

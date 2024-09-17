@@ -25,7 +25,6 @@ def check_mailing_status():
 
 
 def check_send_mailing():
-    print("Hi.")
     for mailing in Mailing.objects.filter(status=Mailing.STARTED):
         obj = Attempt.objects.filter(mailing_id=mailing).last()
         if obj is None:

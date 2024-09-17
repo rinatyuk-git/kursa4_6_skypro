@@ -8,8 +8,7 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView
 
 from config.settings import EMAIL_HOST_USER
-from mailingservice.forms import MailingModeratorForm
-from users.forms import UserRegisterForm, UserProfileForm
+from users.forms import UserRegisterForm, UserProfileForm, UserModeratorForm
 from users.models import User
 
 
@@ -54,16 +53,17 @@ def email_verification(request, token):
     return redirect(reverse("users:user_login"))
 
 
-class UserUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class UserUpdateView(LoginRequiredMixin, UpdateView):
     model = User
-    fields = ('id', 'user_email', 'is_active')
+    fields = ('id', 'email', 'is_active')
     success_url = reverse_lazy('users:user_list')
 
-    def get_form_class(self):
-        user = self.request.user
-        if user.has_perm("mailingservice.can_view_user_list") and user.has_perm("mailingservice.can_block_user"):
-            return MailingModeratorForm
-        raise PermissionDenied
+    # def get_form_class(self):
+    #     user = self.request.user
+    #     if user.has_perm("mailingservice.can_block_user"):
+    #     # if user.has_perm("mailingservice.can_view_user_list") and user.has_perm("mailingservice.can_block_user"):
+    #         return UserModeratorForm
+    #     raise PermissionDenied
 
 
 class UserDeleteView(LoginRequiredMixin, DeleteView):
